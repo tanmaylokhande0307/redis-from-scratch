@@ -5,6 +5,21 @@ The first byte in RESP-serialized payload always identifies its type
 
 ![RESP_data_types](RESP_data_types.png)
 
+##### How Redis command work
+SET admin tl
+
+```*3\r\n$3\r\nset\r\n$5\r\nadmin\r\n$5\r\ntl```
+
+*3 - * indicates array
+$3 - $ bulk string with strings length -3
+set
+$5
+admin
+$5
+ahmed
+
+
+
 #### Redis persistence
 
 ##### RDB Redis Database
