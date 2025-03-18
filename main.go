@@ -2,30 +2,49 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net"
+	"os"
 )
 
-func main(){
+func main() {
 
-	l,err := net.Listen("tcp",":6379")
-	
+	//create new server
+	l, err := net.Listen("tcp", ":6370")
+
 	if err != nil {
 		fmt.Println(err)
-		return 
+		return
 	}
 
-	fmt.Println("Listening on port :6379")
+	fmt.Println("Listening on port :6370")
 
-	conn,err := l.Accept()
+	// Listen for connections
+	conn, err := l.Accept()
 
 	if err != nil {
 		fmt.Println(err)
-		return 
+		return
 	}
 
 	defer conn.Close()
 
-	
+	//create infinite loop to receive commands from the client and execute them
 
+	for {
+		buffer := make([]byte, 1024)
+
+		_, err = conn.Read(buffer)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			fmt.Println("error reading from client: ", err.Error())
+			os.Exit(1)
+		}
+
+		conn.Write([]byte("+OK\r\n")) //according to RESP + = simple string
+
+	}
 
 }
