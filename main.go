@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"strings"
 )
 
 func main() {
@@ -43,7 +44,19 @@ func main() {
 		fmt.Println(value)
 
 		writer := NewWriter(conn)
-		writer.Write(Value{typ: "string", str: "OK"})
+
+		command := strings.ToUpper(value.array[0].bulk)
+		args := value.array[1:]
+
+		handler, ok := Handlers[command]
+		if !ok {
+			fmt.Println("Invalid command: ", command)
+			writer.Write(Value{typ: "string", str: ""})
+			continue
+		}
+
+		result := handler(args)
+		writer.Write(result)
 
 	}
 
